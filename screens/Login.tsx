@@ -15,11 +15,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import config from "../config";
 
-interface LoginProps {
-  isLoggedIn: boolean;
-  setLoggedIn: (isLoggedIn: boolean) => void;
-}
-
 const LoginScreen: FunctionComponent = () => {
   const navigation = useNavigation();
 

@@ -31,9 +31,9 @@ const CalendarCard: FunctionComponent<CalendarCardProps> = (props) => {
 const styles = StyleSheet.create({
   card: {
     marginBottom: 1,
-    borderRadius: 25,
-    paddingTop: 3,
-    paddingBottom: 3,
+    borderRadius: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
     paddingRight: 10,
     paddingLeft: 10,
     backgroundColor: colors.secondary,

@@ -121,18 +121,26 @@ const HomeScreen: FunctionComponent = () => {
     navigation.navigate("Login");
   };
 
+  const profile = async () => {
+    // @ts-ignore
+    navigation.navigate("Profile");
+  };
+
   return (
     <View>
       <Text>Hello {user?.firstName} 👋</Text>
       <Button title="Check" onPress={() => check()} />
       <Button title="Logout" onPress={() => logout()} />
+      <Button title="Profile" onPress={() => profile()} />
       <ScrollView>
         {lessons && lessons.length > 0 ? (
-          <View style={{ height: 500 }}>
+          <View>
             {lessons.map((lesson, index) => (
               <View key={index} style={styles.containerDate}>
-                <CalendarDate date={lesson.date}></CalendarDate>
-                <View>
+                <View style={{ width: "20%" }}>
+                  <CalendarDate date={lesson.date}></CalendarDate>
+                </View>
+                <View style={{ width: "80%", paddingRight: 4 }}>
                   {lesson.lessons.map((lesson, index) => (
                     <CalendarCard
                       name={lesson.name}
