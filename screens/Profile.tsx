@@ -64,6 +64,15 @@ const ProfileScreen: FunctionComponent = () => {
     navigation.navigate("Home");
   };
 
+  const logout = async () => {
+    AsyncStorage.removeItem("userId");
+    AsyncStorage.removeItem("isLoggedIn");
+    AsyncStorage.removeItem("token");
+    await axios.post(`${config.backendUrl}/admin/auth/logout`, null);
+    // @ts-ignore
+    navigation.navigate("Login");
+  };
+
   return (
     <View>
       <Text>Profile</Text>
@@ -79,6 +88,7 @@ const ProfileScreen: FunctionComponent = () => {
           home();
         }}
       />
+      <Button title="Logout" onPress={() => logout()} />
     </View>
   );
 };

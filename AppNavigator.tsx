@@ -15,6 +15,7 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
+          headerShown: false,
           contentStyle: {
             backgroundColor: "#FFFFFF",
           },
@@ -25,7 +26,8 @@ const AppNavigator = () => {
           name="Home"
           component={HomeScreen}
           options={{
-            headerBackVisible: false, // Masque le bouton de retour
+            headerBackVisible: false,
+            headerShown: true,
           }}
         />
         <Stack.Screen

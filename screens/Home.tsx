@@ -1,19 +1,7 @@
-import React, {
-  FunctionComponent,
-  StrictMode,
-  useEffect,
-  useState,
-} from "react";
-import {
-  View,
-  Text,
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollViewComponent,
-  ScrollView,
-} from "react-native";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { Avatar } from "react-native-elements";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -43,17 +31,22 @@ interface User {
   password: string;
 }
 
+interface Grade {
+  id: number;
+  email: string;
+  name: string;
+  level: number;
+}
+
 const HomeScreen: FunctionComponent = () => {
   const navigation = useNavigation();
 
   const [user, setUser] = useState<User>();
-  const [lessons, setLessons] = useState<LessonByDate[]>();
+  const [grade, setGrade] = useState<Grade>();
 
-  const check = async () => {
-    console.log(await AsyncStorage.getItem("userId"));
-    console.log(await AsyncStorage.getItem("isLoggedIn"));
-    console.log(await AsyncStorage.getItem("token"));
-  };
+  const [lessons, setLessons] = useState<LessonByDate[]>();
+  const [diffDate, setDiffDate] = useState<any>();
+  const [closerToday, setCloserToday] = useState<string>();
 
   useEffect(() => {
     const getLessons = async () => {
@@ -65,6 +58,12 @@ const HomeScreen: FunctionComponent = () => {
         )
       ).data;
       setUser(user);
+
+      const grade = (
+        await axios.get(`${config.backendUrl}/commun/grade/${user.gradeId}`)
+      ).data;
+
+      setGrade(grade);
 
       const resLesson = (
         await axios.post(`${config.backendUrl}/student/lesson`, {
@@ -90,12 +89,25 @@ const HomeScreen: FunctionComponent = () => {
         });
       });
 
+      const today = new Date();
+
       // Convert the object into an array of items
       const lessonsArray = Object.keys(eventItems)
-        .map((date) => ({
-          date,
-          lessons: eventItems[date],
-        }))
+        .map((date) => {
+          const diff = Math.abs(new Date(date) - today);
+          if (diffDate === undefined || diffDate > diff) {
+            setDiffDate((prevDiff: number | undefined) =>
+              prevDiff === undefined || prevDiff > diff ? diff : prevDiff
+            );
+
+            setCloserToday(date);
+          }
+
+          return {
+            date,
+            lessons: eventItems[date],
+          };
+        })
         .sort((a, b) => {
           // Convert the date strings to Date objects for comparison
           const dateA = new Date(a.date);
@@ -106,56 +118,75 @@ const HomeScreen: FunctionComponent = () => {
         });
 
       setLessons(lessonsArray);
-      console.log(lessons);
     };
 
     getLessons();
   }, []);
-
-  const logout = async () => {
-    AsyncStorage.removeItem("userId");
-    AsyncStorage.removeItem("isLoggedIn");
-    AsyncStorage.removeItem("token");
-    await axios.post(`${config.backendUrl}/admin/auth/logout`, null);
-    // @ts-ignore
-    navigation.navigate("Login");
-  };
 
   const profile = async () => {
     // @ts-ignore
     navigation.navigate("Profile");
   };
 
+  const today = () => {
+    console.log(elRefs.length);
+    elRefs[4].current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <View>
-      <Text>Hello {user?.firstName} 👋</Text>
-      <Button title="Check" onPress={() => check()} />
-      <Button title="Logout" onPress={() => logout()} />
-      <Button title="Profile" onPress={() => profile()} />
-      <ScrollView>
-        {lessons && lessons.length > 0 ? (
-          <View>
-            {lessons.map((lesson, index) => (
-              <View key={index} style={styles.containerDate}>
-                <View style={{ width: "20%" }}>
-                  <CalendarDate date={lesson.date}></CalendarDate>
+      <View style={{ height: "20%" }}>
+        <View style={styles.containerHeader}>
+          <Text style={styles.hi}>Hello {user?.firstName} 👋</Text>
+          <Avatar
+            rounded
+            title={
+              user ? user?.firstName.charAt(0) + user?.lastName.charAt(0) : "WM"
+            }
+            containerStyle={{
+              backgroundColor: "silver",
+              marginRight: 20,
+            }}
+            onPress={() => profile()}
+          />
+          {/* <Button title="Today" onPress={() => today()} /> */}
+        </View>
+
+        <Text style={styles.titlePlanning}>
+          Planing {grade?.name} ({grade?.level})
+        </Text>
+      </View>
+
+      <View style={{ height: "80%" }}>
+        <ScrollView>
+          {lessons && lessons.length > 0 ? (
+            <View>
+              {lessons.map((lesson, index) => (
+                <View key={index} style={styles.containerDate}>
+                  <View style={{ width: "20%" }}>
+                    <CalendarDate date={lesson.date}></CalendarDate>
+                  </View>
+                  <View style={{ width: "80%", paddingRight: 4 }}>
+                    {lesson.lessons.map((lesson, index) => (
+                      <CalendarCard
+                        key={index}
+                        name={lesson.name}
+                        dateStart={lesson.dateStart}
+                        dateEnd={lesson.dateEnd}
+                      ></CalendarCard>
+                    ))}
+                  </View>
                 </View>
-                <View style={{ width: "80%", paddingRight: 4 }}>
-                  {lesson.lessons.map((lesson, index) => (
-                    <CalendarCard
-                      name={lesson.name}
-                      dateStart={lesson.dateStart}
-                      dateEnd={lesson.dateEnd}
-                    ></CalendarCard>
-                  ))}
-                </View>
-              </View>
-            ))}
-          </View>
-        ) : (
-          <Text>Loading...</Text>
-        )}
-      </ScrollView>
+              ))}
+            </View>
+          ) : (
+            <Text>Loading...</Text>
+          )}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -165,6 +196,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 10,
     paddingBottom: 10,
+  },
+  hi: {
+    fontSize: 25,
+    fontWeight: "300",
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  containerHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 3,
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  titlePlanning: {
+    fontSize: 27,
+    fontWeight: "500",
+    textAlign: "center",
   },
 });
 
