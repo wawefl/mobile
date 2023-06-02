@@ -71,32 +71,40 @@ const LoginScreen: FunctionComponent = () => {
   };
 
   return (
-    <SafeAreaView>
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholder="Email"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setPassword}
-        value={password}
-        placeholder="Password"
-        keyboardType="visible-password"
-      />
-      <Button title="Login" onPress={() => signIn()} />
-    </SafeAreaView>
+    <View style={styles.container}>
+      <SafeAreaView style={{ width: "80%" }}>
+        <TextInput
+          style={styles.input}
+          onChangeText={setEmail}
+          value={email}
+          placeholder="Email"
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={setPassword}
+          value={password}
+          placeholder="Password"
+          keyboardType="visible-password"
+        />
+        <Button title="Login" onPress={() => signIn()} />
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 5,
   },
 });
 
