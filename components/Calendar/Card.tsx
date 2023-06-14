@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingRight: 10,
     paddingLeft: 10,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     color: colors.white,
   },
   hours: {

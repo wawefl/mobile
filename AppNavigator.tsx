@@ -15,13 +15,19 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerShown: false,
+          // headerShown: false,
           contentStyle: {
             backgroundColor: "#FFFFFF",
           },
         }}
       >
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -33,9 +39,11 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{
-            headerBackVisible: false, // Masque le bouton de retour
-          }}
+          options={
+            {
+              // headerBackVisible: false, // Masque le bouton de retour
+            }
+          }
         />
       </Stack.Navigator>
     </NavigationContainer>

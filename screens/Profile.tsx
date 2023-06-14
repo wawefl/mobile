@@ -7,6 +7,8 @@ import {
   Text,
   TextInput,
   View,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +16,9 @@ import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import config from "../config";
+import { Avatar, Icon } from "react-native-elements";
+
+import { colors } from "../components/colors";
 
 interface User {
   id: number;
@@ -68,36 +73,79 @@ const ProfileScreen: FunctionComponent = () => {
     AsyncStorage.removeItem("userId");
     AsyncStorage.removeItem("isLoggedIn");
     AsyncStorage.removeItem("token");
-    await axios.post(`${config.backendUrl}/admin/auth/logout`, null);
+    await axios.post(`${config.backendUrl}/student/auth/logout`, null);
     // @ts-ignore
     navigation.navigate("Login");
   };
 
   return (
-    <View>
-      <Text>Profile</Text>
-      <Text>{user?.name}</Text>
-      <Text>{user?.email}</Text>
-      <Text>
+    <View style={{ height: "100%", paddingLeft: 5 }}>
+      <View style={styles.containerHeader}>
+        <Avatar
+          rounded
+          title={
+            user ? user?.firstName.charAt(0) + user?.lastName.charAt(0) : "WM"
+          }
+          containerStyle={{
+            backgroundColor: "silver",
+            marginRight: 20,
+            marginTop: 10,
+            alignSelf: "flex-end",
+          }}
+        />
+      </View>
+      {/* <Text style={styles.title}>Profile</Text> */}
+      <Text style={styles.firstName}>{user?.firstName}</Text>
+      <Text style={styles.lastName}>{user?.lastName}</Text>
+      <Text style={styles.email}>{user?.email}</Text>
+      <Text style={styles.grade}>
         {grade?.name} ({grade?.level})
       </Text>
 
-      <Button
+      {/* <Button
         title="Home"
         onPress={() => {
           home();
         }}
-      />
-      <Button title="Logout" onPress={() => logout()} />
+      /> */}
+
+      <TouchableOpacity style={styles.logout} onPress={() => logout()}>
+        <Image
+          source={require("../assets/logout.png")}
+          style={{ width: 30, height: 30 }}
+        />
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
+  containerHeader: {},
+  firstName: {
+    fontSize: 48,
+    fontWeight: "500",
+  },
+  lastName: {
+    fontSize: 40,
+    fontWeight: "500",
+  },
+  email: {
+    marginTop: 5,
+    fontSize: 16,
+    fontStyle: "italic",
+    fontWeight: "300",
+  },
+  grade: {
+    marginTop: 30,
+    fontSize: 20,
+  },
+  logout: {
+    position: "absolute",
+    bottom: 20,
+    right: 4,
+    alignSelf: "flex-end",
+    backgroundColor: colors.gray,
+    borderRadius: 50,
     padding: 10,
   },
 });

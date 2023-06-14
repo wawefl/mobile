@@ -7,13 +7,17 @@ import {
   Text,
   TextInput,
   View,
+  Image,
+  Pressable,
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 import config from "../config";
+
+import { colors } from "../components/colors";
 
 const LoginScreen: FunctionComponent = () => {
   const navigation = useNavigation();
@@ -38,7 +42,7 @@ const LoginScreen: FunctionComponent = () => {
   const signIn = async () => {
     try {
       const response = await axios.post(
-        `${config.backendUrl}/admin/auth/login`,
+        `${config.backendUrl}/student/auth/login`,
         {
           email: email,
           password: password,
@@ -48,7 +52,10 @@ const LoginScreen: FunctionComponent = () => {
       if (response.status === 201) {
         // Connexion réussie
         await AsyncStorage.setItem("isLoggedIn", "true");
-        await AsyncStorage.setItem("userId", response.data.admin.id.toString());
+        await AsyncStorage.setItem(
+          "userId",
+          response.data.student.id.toString()
+        );
         await AsyncStorage.setItem("token", response.data.token);
         // @ts-ignore
         navigation.navigate("Home");
@@ -56,6 +63,11 @@ const LoginScreen: FunctionComponent = () => {
       } else {
         // Échec de la connexion
         await AsyncStorage.setItem("isLoggedIn", "false");
+        Toast.show({
+          type: "error",
+          text1: "Login failed",
+          text2: "Email or password are wrong",
+        });
         // Gérez les erreurs et informez l'utilisateur de l'échec de la connexion
       }
 
@@ -66,13 +78,19 @@ const LoginScreen: FunctionComponent = () => {
     } catch (error) {
       // Traitement des erreurs ici
       await AsyncStorage.setItem("isLoggedIn", "false");
+      Toast.show({
+        type: "error",
+        text1: "Login failed",
+        text2: "Email or password are wrong",
+      });
       console.error(error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ width: "80%" }}>
+      <Image source={require("../assets/logo_black.png")} style={styles.logo} />
+      <SafeAreaView style={{ width: "80%", alignItems: "center" }}>
         <TextInput
           style={styles.input}
           onChangeText={setEmail}
@@ -81,14 +99,18 @@ const LoginScreen: FunctionComponent = () => {
           keyboardType="email-address"
         />
         <TextInput
+          secureTextEntry={true}
           style={styles.input}
           onChangeText={setPassword}
           value={password}
           placeholder="Password"
           keyboardType="visible-password"
         />
-        <Button title="Login" onPress={() => signIn()} />
+        <Pressable style={styles.button} onPress={() => signIn()}>
+          <Text style={styles.textButton}>Login</Text>
+        </Pressable>
       </SafeAreaView>
+      <Toast />
     </View>
   );
 };
@@ -105,6 +127,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
+    width: "100%",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: colors.primary,
+    borderRadius: 15,
+    width: 200,
+    color: colors.white,
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textButton: {
+    fontSize: 20,
+    color: colors.white,
   },
 });
 

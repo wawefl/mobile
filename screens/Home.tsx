@@ -68,13 +68,18 @@ const HomeScreen: FunctionComponent = () => {
       const resLesson = (
         await axios.post(`${config.backendUrl}/student/lesson`, {
           where: { gradeId: user.gradeId },
+          orderBy: [
+            {
+              dateStart: "asc",
+            },
+          ],
         })
       ).data;
 
-      const eventItems = [];
+      const eventItems: any[string] = [];
 
       resLesson.forEach((event: Lesson) => {
-        const dateString = event.dateStart.split("T")[0];
+        const dateString: string = event.dateStart.split("T")[0];
         if (!eventItems[dateString]) {
           eventItems[dateString] = []; // Create an empty array for each date if it doesn't exist
         }
@@ -82,11 +87,13 @@ const HomeScreen: FunctionComponent = () => {
       });
 
       Object.keys(eventItems).forEach((date) => {
-        eventItems[date].sort((a, b) => {
-          const dateA = new Date(a.dateStart);
-          const dateB = new Date(b.dateStart);
-          return dateA - dateB;
-        });
+        eventItems[date].sort(
+          (a: { dateStart: string }, b: { dateStart: string }) => {
+            const dateA = new Date(a.dateStart);
+            const dateB = new Date(b.dateStart);
+            return dateA.valueOf() - dateB.valueOf();
+          }
+        );
       });
 
       const today = new Date();
@@ -94,7 +101,7 @@ const HomeScreen: FunctionComponent = () => {
       // Convert the object into an array of items
       const lessonsArray = Object.keys(eventItems)
         .map((date) => {
-          const diff = Math.abs(new Date(date) - today);
+          const diff = Math.abs(new Date(date).valueOf() - today.valueOf());
           if (diffDate === undefined || diffDate > diff) {
             setDiffDate((prevDiff: number | undefined) =>
               prevDiff === undefined || prevDiff > diff ? diff : prevDiff
@@ -114,7 +121,7 @@ const HomeScreen: FunctionComponent = () => {
           const dateB = new Date(b.date);
 
           // Compare the dates and return the comparison result
-          return dateA - dateB;
+          return dateA.valueOf() - dateB.valueOf();
         });
 
       setLessons(lessonsArray);
@@ -126,14 +133,6 @@ const HomeScreen: FunctionComponent = () => {
   const profile = async () => {
     // @ts-ignore
     navigation.navigate("Profile");
-  };
-
-  const today = () => {
-    console.log(elRefs.length);
-    elRefs[4].current.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
   };
 
   return (
@@ -152,7 +151,6 @@ const HomeScreen: FunctionComponent = () => {
             }}
             onPress={() => profile()}
           />
-          {/* <Button title="Today" onPress={() => today()} /> */}
         </View>
 
         <Text style={styles.titlePlanning}>
