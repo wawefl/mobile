@@ -16,7 +16,7 @@ const CalendarCard: FunctionComponent<CalendarCardProps> = (props) => {
   const dateEnd = moment(props.dateEnd);
 
   const hour = (date: any) => {
-    return date.format("h:mm");
+    return date.format("HH:mm");
   };
 
   return (
