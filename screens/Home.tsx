@@ -81,9 +81,9 @@ const HomeScreen: FunctionComponent = () => {
       resLesson.forEach((event: Lesson) => {
         const dateString: string = event.dateStart.split("T")[0];
         if (!eventItems[dateString]) {
-          eventItems[dateString] = []; // Create an empty array for each date if it doesn't exist
+          eventItems[dateString] = [];
         }
-        eventItems[dateString].push(event); // Push the event into the corresponding date array
+        eventItems[dateString].push(event);
       });
 
       Object.keys(eventItems).forEach((date) => {
@@ -91,6 +91,8 @@ const HomeScreen: FunctionComponent = () => {
           (a: { dateStart: string }, b: { dateStart: string }) => {
             const dateA = new Date(a.dateStart);
             const dateB = new Date(b.dateStart);
+
+            // Trie eventItems [date]
             return dateA.valueOf() - dateB.valueOf();
           }
         );
@@ -98,7 +100,6 @@ const HomeScreen: FunctionComponent = () => {
 
       const today = new Date();
 
-      // Convert the object into an array of items
       const lessonsArray = Object.keys(eventItems)
         .map((date) => {
           const diff = Math.abs(new Date(date).valueOf() - today.valueOf());
@@ -106,7 +107,7 @@ const HomeScreen: FunctionComponent = () => {
             setDiffDate((prevDiff: number | undefined) =>
               prevDiff === undefined || prevDiff > diff ? diff : prevDiff
             );
-
+            // Obtient la date la plus proche d'aujourd'hui
             setCloserToday(date);
           }
 
@@ -116,11 +117,10 @@ const HomeScreen: FunctionComponent = () => {
           };
         })
         .sort((a, b) => {
-          // Convert the date strings to Date objects for comparison
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
 
-          // Compare the dates and return the comparison result
+          // Trie pour l'heure de la journée
           return dateA.valueOf() - dateB.valueOf();
         });
 

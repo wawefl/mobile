@@ -31,8 +31,7 @@ const LoginScreen: FunctionComponent = () => {
 
   const checkLoggedIn = async () => {
     const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
-    console.log(await AsyncStorage.getItem("userId"));
-    console.log(isLoggedIn);
+
     if (isLoggedIn === "true") {
       // @ts-ignore
       navigation.navigate("Home");
@@ -59,7 +58,6 @@ const LoginScreen: FunctionComponent = () => {
         await AsyncStorage.setItem("token", response.data.token);
         // @ts-ignore
         navigation.navigate("Home");
-        // Enregistrez le token d'authentification dans l'application
       } else {
         // Échec de la connexion
         await AsyncStorage.setItem("isLoggedIn", "false");
@@ -68,13 +66,7 @@ const LoginScreen: FunctionComponent = () => {
           text1: "Login failed",
           text2: "Email or password are wrong",
         });
-        // Gérez les erreurs et informez l'utilisateur de l'échec de la connexion
       }
-
-      // Traitement de la réponse de la requête ici
-      console.log(response.data);
-
-      // Continuer avec les actions après la connexion réussie
     } catch (error) {
       // Traitement des erreurs ici
       await AsyncStorage.setItem("isLoggedIn", "false");

@@ -94,20 +94,13 @@ const ProfileScreen: FunctionComponent = () => {
           }}
         />
       </View>
-      {/* <Text style={styles.title}>Profile</Text> */}
+
       <Text style={styles.firstName}>{user?.firstName}</Text>
       <Text style={styles.lastName}>{user?.lastName}</Text>
       <Text style={styles.email}>{user?.email}</Text>
       <Text style={styles.grade}>
         {grade?.name} ({grade?.level})
       </Text>
-
-      {/* <Button
-        title="Home"
-        onPress={() => {
-          home();
-        }}
-      /> */}
 
       <TouchableOpacity style={styles.logout} onPress={() => logout()}>
         <Image
