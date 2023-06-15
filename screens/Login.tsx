@@ -1,7 +1,5 @@
-import React, { FC, FunctionComponent, useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import {
-  Button,
   SafeAreaView,
   StyleSheet,
   Text,

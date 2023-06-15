@@ -1,22 +1,11 @@
-import React, { FC, FunctionComponent, useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import config from "../config";
-import { Avatar, Icon } from "react-native-elements";
+import { Avatar } from "react-native-elements";
 
 import { colors } from "../components/colors";
 

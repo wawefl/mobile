@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/Login";
 import HomeScreen from "./screens/Home";
 import ProfileScreen from "./screens/Profile";
-// Importez les autres écrans dont vous avez besoin
 
 const Stack = createNativeStackNavigator();
 
