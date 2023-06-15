@@ -9,13 +9,10 @@ import ProfileScreen from "./screens/Profile";
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          // headerShown: false,
           contentStyle: {
             backgroundColor: "#FFFFFF",
           },
@@ -36,15 +33,7 @@ const AppNavigator = () => {
             headerShown: true,
           }}
         />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={
-            {
-              // headerBackVisible: false, // Masque le bouton de retour
-            }
-          }
-        />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

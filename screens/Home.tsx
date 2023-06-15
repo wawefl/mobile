@@ -40,6 +40,7 @@ interface Grade {
 
 const HomeScreen: FunctionComponent = () => {
   const navigation = useNavigation();
+  const [finish, setFinish] = useState<boolean>();
 
   const [user, setUser] = useState<User>();
   const [grade, setGrade] = useState<Grade>();
@@ -125,6 +126,7 @@ const HomeScreen: FunctionComponent = () => {
         });
 
       setLessons(lessonsArray);
+      setFinish(true);
     };
 
     getLessons();
@@ -181,7 +183,17 @@ const HomeScreen: FunctionComponent = () => {
               ))}
             </View>
           ) : (
-            <Text>Loading...</Text>
+            <>
+              {finish ? (
+                <View>
+                  <Text>No Lesson!</Text>
+                </View>
+              ) : (
+                <View>
+                  <Text>Loading...</Text>
+                </View>
+              )}
+            </>
           )}
         </ScrollView>
       </View>
